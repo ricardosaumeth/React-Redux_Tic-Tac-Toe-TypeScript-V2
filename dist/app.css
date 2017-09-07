@@ -1,0 +1,21 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font: 12px Arial, sans-serif; }
+
+html body {
+  height: 100%;
+  background: white;
+  background: radial-gradient(circle, #fff 20%, #ccc);
+  background-size: cover; }
+
+.container {
+  margin-top: 15px;
+  width: 60%; }
+  .container input, .container textarea {
+    font-size: 10px; }
+
+.modal-footer .btn {
+  font-size: 11px;
+  margin: 2px; }
