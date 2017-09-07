@@ -1,15 +1,17 @@
 {
-  "name": "recipebox",
+  "name": "react-redux-typescript-github-webpack",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.tsx",
   "scripts": {
     "dev": "webpack-dev-server",
     "prod": "webpack -p",
     "clean": "rimraf ./dist/*",
     "test": "jest --coverage --verbose --watch"
   },
-  "author": "",
+  "author": "ricardo saumeth",
+  "github": "https://github.com/tuesdaylobsag/Tic-Tac-Toe---React-Redux-TypeScript-V2",
+  "linkedin": "https://www.linkedin.com/in/ricardo-saumeth-0baba982/",
   "license": "ISC",
   "devDependencies": {
     "awesome-typescript-loader": "^3.1.3",

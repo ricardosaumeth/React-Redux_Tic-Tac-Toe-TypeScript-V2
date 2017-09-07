@@ -366,7 +366,7 @@ button {
 
 .fadeOut{
     animation: fadeOut 600ms linear;/*600ms*/
-    animation-fill-mode: forwards;    
+    animation-fill-mode: forwards;   
 }
 
 @keyframes fadeOut {
@@ -375,9 +375,9 @@ button {
 }
 
 .fadeIn{ 
-    animation: fadeIn 1s linear;/*1.5s*/
     display: block;
-    animation-fill-mode: forwards; 
+    animation: fadeIn 1s linear;/*1.5s*/
+    animation-fill-mode: forwards;    
 }
 
 @keyframes fadeIn {
