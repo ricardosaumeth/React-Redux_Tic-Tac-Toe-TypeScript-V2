@@ -21,7 +21,7 @@ class GameStarter extends React.Component<any, any>{
     render(){
         return(
             <div className="game-starter">
-                <p>Would you like to be X or O?</p>
+                <p></p>
                 <Button className={"choose-x"}>X</Button>
                 <Button className="choose-o">O</Button>
                 <Button className="back-button" onClick={this.backBtn}><i className="fa fa-arrow-left"></i> Back</Button>

@@ -56,7 +56,7 @@ module.exports = {
   },
     plugins: [
             new HtmlWebpackPlugin({
-              title: 'Recipe Box',
+              title: 'React Redux TypeScript Github and more...',
               //minify:{
               //  collapseWhitespace: true,
               //},
