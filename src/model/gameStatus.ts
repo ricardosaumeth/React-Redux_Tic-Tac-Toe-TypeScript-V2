@@ -1,13 +1,14 @@
-export interface IGameStatus {
-    game_choice?: HTMLElement;
-    
+export interface IGameStatus{
+    game_choice: HTMLCollectionOf<Element>;
+    game_starter: HTMLCollectionOf<Element>; 
+    game_board: HTMLCollectionOf<Element>;
   }
 
-class GameStatus{
+class GameStatus implements IGameStatus{
 
-    private game_choice: any;    
-    private game_starter: any; 
-    private game_board: any; 
+    game_choice: HTMLCollectionOf<Element>;    
+    game_starter: HTMLCollectionOf<Element>; 
+    game_board: HTMLCollectionOf<Element>; 
 
     constructor(){
         this.game_choice = document.getElementsByClassName('game-choice');
