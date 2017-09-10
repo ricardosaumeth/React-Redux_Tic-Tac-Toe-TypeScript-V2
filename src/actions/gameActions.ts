@@ -1,24 +1,29 @@
 import * as types from "./actionsTypes";
-
 import GameStatus from "../model/GameStatus";
 
 const gameStatus = new GameStatus();
 
-export function loadGameStarter(numPlayer: number){
-    //debugger;
+export function loadGame(numPlayer: number){
     gameStatus.hideGameChoice(numPlayer);
     return {
-        type: types.LOAD_GAMESTARTED_SUCCESS,
+        type: types.LOAD_GAME_SUCCESS,
         payload: gameStatus
     };
 }
 
-export function backBtn(){
-    
+export function backBtn(){  
     gameStatus.backBtn();
     return {
         type: types.BACKBTN_CLICKED_SUCCESS,
         payload: gameStatus
     };
+}
+
+export function gameStarted(playerSymbol:string){
+    gameStatus.gameStarted(playerSymbol);
+    return {
+        type: types.GAME_STARTED_SUCCESS,
+        payload: gameStatus
+    }; 
 }
 

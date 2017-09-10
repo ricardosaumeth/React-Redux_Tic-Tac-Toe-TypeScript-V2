@@ -3,7 +3,7 @@ import initialState from "./initialState";
 
 export default function gameReducer(state = initialState, action:any){
     switch (action.type) {
-        case  types.LOAD_GAMESTARTED_SUCCESS:
+        case  types.LOAD_GAME_SUCCESS:
             return(
                 state = {
                    ...state,
@@ -13,6 +13,15 @@ export default function gameReducer(state = initialState, action:any){
             );
                
         case  types.BACKBTN_CLICKED_SUCCESS:
+        return(
+            state = {
+                ...state,
+                game: action.payload,
+                gameVariables: [...state.gameVariables, action.payload] 
+            }
+        );
+
+        case  types.LOAD_GAME_SUCCESS:
         return(
             state = {
                 ...state,

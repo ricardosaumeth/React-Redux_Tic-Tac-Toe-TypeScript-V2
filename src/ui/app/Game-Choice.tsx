@@ -3,19 +3,19 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 
 import Button from "../components/Button";
-import {loadGameStarter} from "../../actions/gameActions";
+import {loadGame} from "../../actions/gameActions";
 
 
 class GameChoice extends React.Component<any, any>{
 
     constructor(props: any){
         super(props);
-        this.loadGameStarter = this.loadGameStarter.bind(this);
+        this.loadGame = this.loadGame.bind(this);
     }
 
-    loadGameStarter(numPlayer:number){
-        const loadGameStarter = this.props.loadGameStarter;
-        loadGameStarter(numPlayer);
+    loadGame(numPlayer:number){
+        const loadGame = this.props.loadGame;
+        loadGame(numPlayer);
     }    
 
     render(){
@@ -23,8 +23,8 @@ class GameChoice extends React.Component<any, any>{
         return(
             <div className="game-choice">
                 <p>How do you want to play?</p>
-                <Button className={"one-player"} onClick={()=>this.loadGameStarter(1)}>One Player</Button>
-                <Button className={"two-player"} onClick={()=>this.loadGameStarter(2)}>Two Player</Button>
+                <Button className={"one-player"} onClick={()=>this.loadGame(1)}>One Player</Button>
+                <Button className={"two-player"} onClick={()=>this.loadGame(2)}>Two Player</Button>
             </div>   
         );
     }
@@ -32,7 +32,7 @@ class GameChoice extends React.Component<any, any>{
 
 function mapDispatchToProps(dispath: any) {
     return bindActionCreators({
-        loadGameStarter: loadGameStarter
+        loadGame: loadGame
         }, dispath);    
 }
 

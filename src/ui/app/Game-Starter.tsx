@@ -3,14 +3,15 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 
 import Button from "../components/Button";
-import {backBtn} from "../../actions/gameActions";
+import {backBtn, gameStarted} from "../../actions/gameActions";
 
 class GameStarter extends React.Component<any, any>{
 
     constructor(props:any){
         super(props);
 
-        this.backBtn = this.backBtn.bind(this);    
+        this.backBtn = this.backBtn.bind(this); 
+        this.startGame = this.startGame.bind(this);   
     }
 
     backBtn(){
@@ -18,12 +19,16 @@ class GameStarter extends React.Component<any, any>{
         backBtn();
     }
 
+    startGame(symbol:string){
+        this.props.startGame(symbol);
+    }
+
     render(){
         return(
             <div className="game-starter">
                 <p></p>
-                <Button className={"choose-x"}>X</Button>
-                <Button className="choose-o">O</Button>
+                <Button className={"choose-x"} onClick={()=>this.startGame("X")}>X</Button>
+                <Button className="choose-o" onClick={()=>this.startGame("O")}>O</Button>
                 <Button className="back-button" onClick={this.backBtn}><i className="fa fa-arrow-left"></i> Back</Button>
             </div>  
         );
@@ -32,7 +37,8 @@ class GameStarter extends React.Component<any, any>{
 
 function mapDispatchToProps(dispath: any) {
     return bindActionCreators({
-        backBtn: backBtn
+        backBtn: backBtn,
+        startGame: gameStarted
         }, dispath);    
 }
 

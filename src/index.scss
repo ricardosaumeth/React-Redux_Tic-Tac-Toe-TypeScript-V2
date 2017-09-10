@@ -365,7 +365,7 @@ button {
 ============================================*/
 
 .fadeOut{
-    animation: fadeOut 600ms linear;/*600ms*/
+    animation: fadeOut 600ms linear;
     animation-fill-mode: forwards;   
 }
 
@@ -376,7 +376,7 @@ button {
 
 .fadeIn{ 
     display: block;
-    animation: fadeIn 1s linear;/*1.5s*/
+    animation: fadeIn 1s linear;
     animation-fill-mode: forwards;    
 }
 
@@ -389,7 +389,6 @@ button {
     animation: fadeIn 2000ms linear;
     animation-fill-mode: forwards;  
 }
-
 
 @keyframes turnAlert {
    0%{ top: 0px;}
