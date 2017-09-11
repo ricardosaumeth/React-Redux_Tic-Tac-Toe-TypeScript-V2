@@ -19,10 +19,25 @@ class GameStatus /*implements IGameStatus*/{
     private score_2: HTMLCollectionOf<Element>;
     private points_divider: HTMLCollectionOf<Element>;
 
+    // Game logic
+    private isSecondPlayerActive: boolean;
+    private scorePlayerOne:number;
+    private scorePlayerTwo:number;
+    private secondPlayerLabel: HTMLCollectionOf<Element>;
+    private turn: number;
+    private playerOneSymbol: string;
+    private playerTwoSymbol:string;
+    private isGameInPlay: boolean;
+
     constructor(){
         this.game_choice = document.getElementsByClassName('game-choice');
         this.game_starter = document.getElementsByClassName('game-starter');
-        this.game_board = document.getElementsByClassName('game-board');    
+        this.game_board = document.getElementsByClassName('game-board');
+        
+        this.isSecondPlayerActive = false;
+        this.turn = 0;
+        this.playerOneSymbol = "";
+        this.playerTwoSymbol = "";
     }
 
     hideGameChoice(numPlayer:number){
@@ -40,6 +55,7 @@ class GameStatus /*implements IGameStatus*/{
         
         this.game_starter[0].firstElementChild.innerHTML = "Would you like to be X or O?";
         if(numPlayer === 2){
+            this.isSecondPlayerActive = true;
             this.game_starter[0].firstElementChild.innerHTML = "Player 1 : Would you like X or O?";
         }
         //fade in game-started. Second page 
@@ -71,8 +87,13 @@ class GameStatus /*implements IGameStatus*/{
     }
 
     startGame(symbol:string){
+        this.playerOneSymbol = symbol;
+        this.playerTwoSymbol = this.playerOneSymbol === "X" ? "O" : "X";
+
         this.drawBoard();
         this.showScoreBoard();
+        this.turn = this.whoStarts();
+        this.play();
     }
 
     drawBoard(){
@@ -118,7 +139,7 @@ class GameStatus /*implements IGameStatus*/{
             cxt.lineTo(296, 98.5);
             cxt.closePath();
             cxt.stroke(); 
-        }, 1000); 
+        }, 800); 
     }
 
     showScoreBoard(){
@@ -126,6 +147,15 @@ class GameStatus /*implements IGameStatus*/{
         this.score_1 = document.getElementsByClassName("score-1");
         this.score_2 = document.getElementsByClassName("score-2");
         this.points_divider = document.getElementsByClassName("points-divider");
+        this. secondPlayerLabel = document.getElementsByClassName("playerTwo");
+        if(this.isSecondPlayerActive){
+            this.secondPlayerLabel[0].innerHTML = "Player 2";
+        }else{
+            this.secondPlayerLabel[0].innerHTML = "Computer";
+        }
+
+        this.score_1[0].firstElementChild.innerHTML = "0";
+        this.score_2[0].firstElementChild.innerHTML = "0";
 
         setTimeout(()=> { 
             //show the header on the board
@@ -133,7 +163,46 @@ class GameStatus /*implements IGameStatus*/{
             this.score_1[0].classList.add("fadeIn");
             this.score_2[0].classList.add("fadeIn");
             this.points_divider[0].setAttribute("style", "display: inline");
-        }, 1000);
+        }, 800);
+    }
+
+    whoStarts(){
+        var random = Math.floor(Math.random() * 2 + 1);
+        return random;
+    }
+
+    play(){
+        this.isGameInPlay = true;
+        if(this.turn === 1){
+            setTimeout(()=> {
+                this.showPlayerOnePrompt();   
+            }, 1500);      
+        }else{
+            setTimeout(()=> {
+                this.showPlayerTwoPrompt();   
+            }, 1500);
+        }
+    }
+
+    showPlayerOnePrompt(){
+        let player_one_turn = document.getElementsByClassName("player-one-turn");
+        player_one_turn[0].classList.add("promptGoPlayerAnimation");
+        if(this.isSecondPlayerActive){
+          player_one_turn[0].firstElementChild.innerHTML = "Go Player 1";
+        }else{
+            player_one_turn[0].firstElementChild.innerHTML = "Your turn!";  
+        }
+        
+    }
+
+    showPlayerTwoPrompt(){
+        let player_two_turn = document.getElementsByClassName("player-two-turn");
+        player_two_turn[0].classList.add("promptGoPlayerAnimation");
+        if(this.isSecondPlayerActive){
+            player_two_turn[0].firstElementChild.innerHTML = "Go Player 2";
+        }else{
+            player_two_turn[0].firstElementChild.innerHTML = "Computer\'s turn";
+        } 
     }
 
 }

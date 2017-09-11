@@ -30,6 +30,15 @@ export default function gameReducer(state = initialState, action:any){
             }
         );
 
+        case  types.PLAYER_TURN_FINISHED_SUCCESS:
+        return(
+            state = {
+                ...state,
+                game: action.payload,
+                gameVariables: [...state.gameVariables, action.payload] 
+            }
+        );
+
         default:
             return state;
     }

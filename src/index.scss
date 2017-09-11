@@ -55,6 +55,7 @@ span{
   position: relative;
   left: 12px;
   top: 0;
+  cursor: pointer;
 }
 
 .boxes li {
@@ -388,6 +389,11 @@ button {
 .fadeInLonger{  
     animation: fadeIn 2000ms linear;
     animation-fill-mode: forwards;  
+}
+
+.promptGoPlayerAnimation{
+  animation: turnAlert 500ms linear;
+  animation-fill-mode: forwards;
 }
 
 @keyframes turnAlert {

@@ -1,6 +1,4 @@
 import * as React from "react";
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
 
 import GameStarter from "./app/Game-Starter";
 import GameChoice from "./app/Game-Choice";
@@ -16,14 +14,13 @@ class App extends React.Component<any, any>{
             <div className="outer-container">
               <Button className="hard-reset">Reset All</Button>
               <p className="score-1">
-                {/*remove the 0s and Player 1 and 2*/}
-                <span className="points">0</span>
-                <span className="name">Player 1</span>
+                <span className="points"></span>
+                <span className="playerOne">Player 1</span>
               </p>
               <i className="points-divider">&#124;</i>
               <p className="score-2">
-                <span className="points">0</span>
-                <span className="name">Payer 2</span>
+                <span className="points"></span>
+                <span className="playerTwo"></span>
               </p>
               <div className="player-one-turn">
                 <p></p>
@@ -40,8 +37,5 @@ class App extends React.Component<any, any>{
         );
     }
 }
-
-
-
 
 export default App;

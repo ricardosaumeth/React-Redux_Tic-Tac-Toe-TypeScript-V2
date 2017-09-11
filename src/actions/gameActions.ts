@@ -27,3 +27,11 @@ export function gameStarted(playerSymbol:string){
     }; 
 }
 
+export function playerTurn(){
+   debugger;
+    return {
+        type: types.PLAYER_TURN_FINISHED_SUCCESS,
+        payload: gameStatus
+    };
+}
+
