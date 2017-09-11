@@ -20,7 +20,7 @@ export function backBtn(){
 }
 
 export function gameStarted(playerSymbol:string){
-    gameStatus.gameStarted(playerSymbol);
+    gameStatus.startGame(playerSymbol);
     return {
         type: types.GAME_STARTED_SUCCESS,
         payload: gameStatus

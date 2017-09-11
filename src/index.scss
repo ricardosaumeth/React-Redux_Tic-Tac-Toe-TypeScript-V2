@@ -375,7 +375,7 @@ button {
 }
 
 .fadeIn{ 
-    display: block;
+    display: inline-block;
     animation: fadeIn 1s linear;
     animation-fill-mode: forwards;    
 }

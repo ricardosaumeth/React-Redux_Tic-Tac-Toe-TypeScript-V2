@@ -13,12 +13,16 @@ class GameStatus /*implements IGameStatus*/{
     private game_choice: HTMLCollectionOf<Element>;    
     private game_starter: HTMLCollectionOf<Element>; 
     private game_board: HTMLCollectionOf<Element>;
-    private canvas: HTMLCanvasElement; 
+    private canvas: HTMLCanvasElement;
+    private resetBtn: HTMLCollectionOf<Element>;
+    private score_1: HTMLCollectionOf<Element>;
+    private score_2: HTMLCollectionOf<Element>;
+    private points_divider: HTMLCollectionOf<Element>;
 
     constructor(){
         this.game_choice = document.getElementsByClassName('game-choice');
         this.game_starter = document.getElementsByClassName('game-starter');
-        this.game_board = document.getElementsByClassName('game-board');
+        this.game_board = document.getElementsByClassName('game-board');    
     }
 
     hideGameChoice(numPlayer:number){
@@ -66,16 +70,18 @@ class GameStatus /*implements IGameStatus*/{
            }, 1800); 
     }
 
-    gameStarted(symbol:string){
+    startGame(symbol:string){
         this.drawBoard();
+        this.showScoreBoard();
     }
 
     drawBoard(){
         this.game_starter[0].classList.add("fadeOut");
         this.game_starter[0].classList.remove("fadeIn");
         this.game_choice[0].classList.remove("fadeOut");
-        
+
         this.canvas = <HTMLCanvasElement>document.getElementById("myCanvas");
+        
         //use seTimeOut to create a smoothly entrance of the canvas
         setTimeout(()=> { 
             //Add fadein class to show the canvas with an animation
@@ -113,6 +119,21 @@ class GameStatus /*implements IGameStatus*/{
             cxt.closePath();
             cxt.stroke(); 
         }, 1000); 
+    }
+
+    showScoreBoard(){
+        this.resetBtn = document.getElementsByClassName("hard-reset");
+        this.score_1 = document.getElementsByClassName("score-1");
+        this.score_2 = document.getElementsByClassName("score-2");
+        this.points_divider = document.getElementsByClassName("points-divider");
+
+        setTimeout(()=> { 
+            //show the header on the board
+            this.resetBtn[0].classList.add("fadeIn"); 
+            this.score_1[0].classList.add("fadeIn");
+            this.score_2[0].classList.add("fadeIn");
+            this.points_divider[0].setAttribute("style", "display: inline");
+        }, 1000);
     }
 
 }
