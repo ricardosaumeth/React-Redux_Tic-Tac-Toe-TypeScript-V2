@@ -11,15 +11,11 @@ class GameBoard extends React.Component<any, any>{
        super(props);
     }
 
-    playerTurn(ListBox:any){
-       this.props.playerTurn(ListBox);
-    }
-
     render(){
 
         let listBoxes = [];
         for(var i = 1; i < 10; i++){
-            listBoxes[i] = <ListBoxItem id={i.toString()} key={i.toString()} onClick={this.playerTurn.bind(this)}/> ;
+            listBoxes[i] = <ListBoxItem id={i.toString()} key={i.toString()} onClick={this.props.playerTurn}/> ;
         }
 
         return(

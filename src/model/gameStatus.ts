@@ -6,8 +6,6 @@ export interface IGameStatus{
   }
 */ 
 
-import * as React from "react";
-
 class GameStatus /*implements IGameStatus*/{
 
     private game_choice: HTMLCollectionOf<Element>;    
@@ -21,13 +19,16 @@ class GameStatus /*implements IGameStatus*/{
 
     // Game logic
     private isSecondPlayerActive: boolean;
-    private scorePlayerOne:number;
-    private scorePlayerTwo:number;
+    private playerOneScore:number;
+    private playerTwoScore:number;
     private secondPlayerLabel: HTMLCollectionOf<Element>;
     private turn: number;
     private playerOneSymbol: string;
     private playerTwoSymbol:string;
     private isGameInPlay: boolean;
+    private currentBoard: any;
+    private numFilledIn: number;
+    private winCombos: any[];
 
     constructor(){
         this.game_choice = document.getElementsByClassName('game-choice');
@@ -35,9 +36,33 @@ class GameStatus /*implements IGameStatus*/{
         this.game_board = document.getElementsByClassName('game-board');
         
         this.isSecondPlayerActive = false;
+        this.playerOneScore = 0;
+        this.playerTwoScore = 0;
         this.turn = 0;
         this.playerOneSymbol = "";
         this.playerTwoSymbol = "";
+        this.currentBoard = {
+            1: '',
+            2: '',
+            3: '',
+            4: '',
+            5: '',
+            6: '',
+            7: '',
+            8: '',
+            9: ''
+          };
+        this.numFilledIn = 0;  
+        this.winCombos = [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9],
+            [1, 4, 7],
+            [2, 5, 8],
+            [3, 6, 9],
+            [1, 5, 9],
+            [7, 5, 3]
+          ];
     }
 
     hideGameChoice(numPlayer:number){
@@ -205,9 +230,94 @@ class GameStatus /*implements IGameStatus*/{
     }
 
     playerTurn(ListBox:any){
-        debugger;
-        console.log(ListBox.currentTarget.id);
+        let symbol = this.turn === 1 ? this.playerOneSymbol : this.playerTwoSymbol;
+        
+        let box = document.getElementById(ListBox.currentTarget.id).firstElementChild.firstElementChild;
+        if (box.innerHTML === '' && this.isGameInPlay && (this.turn === 1 || (this.turn === 2 && this.isSecondPlayerActive))){
+            box.innerHTML = symbol;
+            let number = ListBox.currentTarget.id;
+            this.updateSquare(number, symbol);
+            this.endTurn(symbol);
+        }
     }
+
+    updateSquare(boxNumber:number, symbol:string){
+        this.currentBoard[boxNumber] = symbol;
+    }
+
+    endTurn(symbol:string){
+        this.numFilledIn = this.numFilledIn + 1;
+        if (this.isGameInPlay) {
+          if (this.checkWin(symbol)[0]) {
+            this.updateScore(this.turn);
+            if (this.isSecondPlayerActive) {
+              this.showWinMessage();
+            }
+            else {
+              //this.turn === 1 ? this.showWinMessage() : this.showLoseMessage();
+            }
+            this.isGameInPlay = false;
+            //this.showWinningCombination();
+            //this.hidePlayerOnePrompt();
+            //this.hidePlayerTwoPrompt();
+            //this.reset();
+          }
+          // stop if it is a draw
+          else if (this.numFilledIn >= 9) {
+            this.isGameInPlay = false;
+            //this.hidePlayerOnePrompt();
+            //this.hidePlayerTwoPrompt();
+            //this.showDrawMessage();
+            this.turn = this.whoStarts();
+            //this.reset();
+          } else {
+            if (this.turn === 1) {
+              //this.hidePlayerOnePrompt();
+              //this.showPlayerTwoPrompt();
+              this.turn = 2;
+              // call computer turn if no second player
+              if (!this.isSecondPlayerActive) {
+                //this.computerPlay();
+              }
+            } else if (this.turn === 2) {
+              //this.showPlayerOnePrompt();
+              //this.hidePlayerTwoPrompt();
+              this.turn = 1;
+            }
+          }
+        }
+    }// end endTurn 
+
+    checkWin(symbol: string | number){
+        let currentBoard = this.currentBoard;
+        let wins = this.winCombos;
+        let winningCombo:number[] = [];
+        let winner = wins.some(function(combination) {
+          let winning = true;
+          for (var i = 0; i < combination.length; i++) {
+            if (currentBoard[combination[i]] !== symbol) {
+              winning = false;
+            }
+          }
+          if (winning) {
+            winningCombo = combination;
+          }
+          return winning;
+        });
+       return [winner, winningCombo];
+    }
+
+    updateScore(PlayerTurn:number){
+        this.turn === 1 ? this.playerOneScore += 1 : this.playerTwoScore += 1;
+        let currentScore = this.turn === 1 ? this.playerOneScore : this.playerTwoScore;
+        let score = document.getElementsByClassName(`score-${this.turn}`);
+        score[0].firstElementChild.innerHTML = currentScore.toString(); 
+    }
+
+    showWinMessage(){
+        //to do
+    }
+    
 }
 
 export default GameStatus;
