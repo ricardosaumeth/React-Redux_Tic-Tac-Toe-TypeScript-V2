@@ -2,22 +2,25 @@ import * as React from "react";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import Button from "../components/Button";
+import ListBoxItem from "../components/ListBoxItem";
 import {playerTurn} from "../../actions/gameActions";
 
 class GameBoard extends React.Component<any, any>{
 
     constructor(props:any){
        super(props);
-       this.playerTurn = this.playerTurn.bind(this); 
     }
 
-    playerTurn(){ 
-       this.props.playerTurn();
+    playerTurn(ListBox:any){
+       this.props.playerTurn(ListBox);
     }
 
     render(){
 
-        // create the li dynamically
+        let listBoxes = [];
+        for(var i = 1; i < 10; i++){
+            listBoxes[i] = <ListBoxItem id={i.toString()} key={i.toString()} onClick={this.playerTurn.bind(this)}/> ;
+        }
 
         return(
             <div className="game-board">
@@ -32,15 +35,17 @@ class GameBoard extends React.Component<any, any>{
                 </div>
                 <canvas id="myCanvas"></canvas>
                 <ul className="boxes">
-                  <li onClick={()=>this.playerTurn()}>
-                  <span className="letter">
-                      <span>X</span>
-                    </span>
-                  </li>   
-                </ul>
+                  {listBoxes}                
+                </ul>                        
           </div>  
         );
     }
+}
+
+function mapStateToProps(state: any) {   
+    return Object.assign({}, state, {
+        gameVariables: state.gameStatus
+      });
 }
 
 function mapDispatchToProps(dispath: any) {

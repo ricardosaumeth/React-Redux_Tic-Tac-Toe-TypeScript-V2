@@ -27,8 +27,8 @@ export function gameStarted(playerSymbol:string){
     }; 
 }
 
-export function playerTurn(){
-   debugger;
+export function playerTurn(ListBox:any){
+   gameStatus.playerTurn(ListBox);
     return {
         type: types.PLAYER_TURN_FINISHED_SUCCESS,
         payload: gameStatus

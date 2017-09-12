@@ -192,7 +192,6 @@ class GameStatus /*implements IGameStatus*/{
         }else{
             player_one_turn[0].firstElementChild.innerHTML = "Your turn!";  
         }
-        
     }
 
     showPlayerTwoPrompt(){
@@ -205,6 +204,10 @@ class GameStatus /*implements IGameStatus*/{
         } 
     }
 
+    playerTurn(ListBox:any){
+        debugger;
+        console.log(ListBox.currentTarget.id);
+    }
 }
 
 export default GameStatus;
