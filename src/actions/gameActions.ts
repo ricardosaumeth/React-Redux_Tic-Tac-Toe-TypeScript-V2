@@ -4,7 +4,7 @@ import GameStatus from "../model/GameStatus";
 const gameStatus = new GameStatus();
 
 export function loadGame(numPlayer: number){
-    gameStatus.hideGameChoice(numPlayer);
+    gameStatus.showGameStartedBoard(numPlayer);
     return {
         type: types.LOAD_GAME_SUCCESS,
         payload: gameStatus
@@ -12,9 +12,9 @@ export function loadGame(numPlayer: number){
 }
 
 export function backBtn(){  
-    gameStatus.backBtn();
+    gameStatus.resetAllBoardClasses();
     return {
-        type: types.BACKBTN_CLICKED_SUCCESS,
+        type: types.RESET_BOARD_CLASSES_SUCCESS,
         payload: gameStatus
     };
 }

@@ -2,9 +2,9 @@
 export interface IGameStatus{
     game_choice: HTMLCollectionOf<Element>;
     game_starter: HTMLCollectionOf<Element>; 
-    game_board: HTMLCollectionOf<Element>;
+    game_board: HTMLCollectionOf<Element>;   
   }
-*/ 
+*/
 
 class GameStatus /*implements IGameStatus*/{
 
@@ -17,8 +17,8 @@ class GameStatus /*implements IGameStatus*/{
     private score_2: HTMLCollectionOf<Element>;
     private points_divider: HTMLCollectionOf<Element>;
 
-    // Game logic
-    private isSecondPlayerActive: boolean;
+    // Game logic   
+    private isSecondPlayer: boolean;
     private playerOneScore:number;
     private playerTwoScore:number;
     private secondPlayerLabel: HTMLCollectionOf<Element>;
@@ -35,7 +35,7 @@ class GameStatus /*implements IGameStatus*/{
         this.game_starter = document.getElementsByClassName('game-starter');
         this.game_board = document.getElementsByClassName('game-board');
         
-        this.isSecondPlayerActive = false;
+        this.isSecondPlayer = false;
         this.playerOneScore = 0;
         this.playerTwoScore = 0;
         this.turn = 0;
@@ -64,46 +64,39 @@ class GameStatus /*implements IGameStatus*/{
             [7, 5, 3]
           ];
     }
+    
+    public showGameStartedBoard(numPlayer:number){
+        this.hideGameChoiceBoard();
+        this.game_starter[0].firstElementChild.innerHTML = "Would you like to be X or O?";
+        if(numPlayer === 2){
+            this.isSecondPlayer = true;
+            this.game_starter[0].firstElementChild.innerHTML = "Player 1 : Would you like X or O?";
+        }
+        // show the second page 
+        this.game_starter[0].classList.add("fadeIn");    
+    }
 
-    hideGameChoice(numPlayer:number){
+    private hideGameChoiceBoard(){
         this.game_choice[0].classList.add("fadeOut"); 
-
         // use this to disable the buttons on page 1.
         setTimeout(()=> {
            this.game_choice[0].setAttribute("style", "display:none");  
         }, 1000);
-
-        this.showGameStarted(numPlayer);
     }
 
-    showGameStarted(numPlayer:number){
-        
-        this.game_starter[0].firstElementChild.innerHTML = "Would you like to be X or O?";
-        if(numPlayer === 2){
-            this.isSecondPlayerActive = true;
-            this.game_starter[0].firstElementChild.innerHTML = "Player 1 : Would you like X or O?";
-        }
-        //fade in game-started. Second page 
-        this.game_starter[0].classList.add("fadeIn");    
-    }
-
-    backBtn(){
+    public resetAllBoardClasses(){  
         this.game_starter[0].setAttribute("style", "display:block");
         this.game_starter[0].classList.add("fadeOut");
         this.game_starter[0].classList.remove("fadeIn");
         
-        //fade out game-started. Second page  
+        // fade out  the second page  
         setTimeout(()=> {     
             this.game_choice[0].setAttribute("style","display:null");
             this.game_choice[0].classList.add("fadeIn");     
         }, 1000);
-
-        this.resetAllBoardClasses();
-    }
-
-    resetAllBoardClasses(){      
-        //reset the game and choice div to their original classes.
-        //This set the animation back to the beginning
+        
+        // Reset the Game's Boards to their original classes.
+        // This set the animation back to the beginning
         setTimeout(()=> {
             this.game_starter[0].className = "game-starter";
             this.game_choice[0].className = "game-choice"; 
@@ -111,26 +104,25 @@ class GameStatus /*implements IGameStatus*/{
            }, 1800); 
     }
 
-    startGame(symbol:string){
+    public startGame(symbol:string){
         this.playerOneSymbol = symbol;
         this.playerTwoSymbol = this.playerOneSymbol === "X" ? "O" : "X";
-
         this.drawBoard();
         this.showScoreBoard();
         this.turn = this.whoStarts();
         this.play();
     }
 
-    drawBoard(){
+    private drawBoard(){
         this.game_starter[0].classList.add("fadeOut");
         this.game_starter[0].classList.remove("fadeIn");
         this.game_choice[0].classList.remove("fadeOut");
 
         this.canvas = <HTMLCanvasElement>document.getElementById("myCanvas");
         
-        //use seTimeOut to create a smoothly entrance of the canvas
+        // use seTimeOut to create a smoothly entrance of the canvas
         setTimeout(()=> { 
-            //Add fadein class to show the canvas with an animation
+            // Add fadein class to show the canvas with an animation
             this.canvas.classList.add("fadeIn"); 
 
             this.game_starter[0].classList.remove("fadeOut");
@@ -167,13 +159,13 @@ class GameStatus /*implements IGameStatus*/{
         }, 800); 
     }
 
-    showScoreBoard(){
+    private showScoreBoard(){
         this.resetBtn = document.getElementsByClassName("hard-reset");
         this.score_1 = document.getElementsByClassName("score-1");
         this.score_2 = document.getElementsByClassName("score-2");
         this.points_divider = document.getElementsByClassName("points-divider");
         this. secondPlayerLabel = document.getElementsByClassName("playerTwo");
-        if(this.isSecondPlayerActive){
+        if(this.isSecondPlayer){
             this.secondPlayerLabel[0].innerHTML = "Player 2";
         }else{
             this.secondPlayerLabel[0].innerHTML = "Computer";
@@ -183,7 +175,7 @@ class GameStatus /*implements IGameStatus*/{
         this.score_2[0].firstElementChild.innerHTML = "0";
 
         setTimeout(()=> { 
-            //show the header on the board
+            // show the header on the board
             this.resetBtn[0].classList.add("fadeIn"); 
             this.score_1[0].classList.add("fadeIn");
             this.score_2[0].classList.add("fadeIn");
@@ -191,12 +183,12 @@ class GameStatus /*implements IGameStatus*/{
         }, 800);
     }
 
-    whoStarts(){
+    private whoStarts(){
         var random = Math.floor(Math.random() * 2 + 1);
         return random;
     }
 
-    play(){
+    private play(){
         this.isGameInPlay = true;
         if(this.turn === 1){
             setTimeout(()=> {
@@ -209,31 +201,31 @@ class GameStatus /*implements IGameStatus*/{
         }
     }
 
-    showPlayerOnePrompt(){
+    private showPlayerOnePrompt(){
         let player_one_turn = document.getElementsByClassName("player-one-turn");
         player_one_turn[0].classList.add("promptGoPlayerAnimation");
-        if(this.isSecondPlayerActive){
+        if(this.isSecondPlayer){
           player_one_turn[0].firstElementChild.innerHTML = "Go Player 1";
         }else{
             player_one_turn[0].firstElementChild.innerHTML = "Your turn!";  
         }
     }
 
-    showPlayerTwoPrompt(){
+    private showPlayerTwoPrompt(){
         let player_two_turn = document.getElementsByClassName("player-two-turn");
         player_two_turn[0].classList.add("promptGoPlayerAnimation");
-        if(this.isSecondPlayerActive){
+        if(this.isSecondPlayer){
             player_two_turn[0].firstElementChild.innerHTML = "Go Player 2";
         }else{
             player_two_turn[0].firstElementChild.innerHTML = "Computer\'s turn";
         } 
     }
 
-    playerTurn(ListBox:any){
+    public playerTurn(ListBox:any){
         let symbol = this.turn === 1 ? this.playerOneSymbol : this.playerTwoSymbol;
         
         let box = document.getElementById(ListBox.currentTarget.id).firstElementChild.firstElementChild;
-        if (box.innerHTML === '' && this.isGameInPlay && (this.turn === 1 || (this.turn === 2 && this.isSecondPlayerActive))){
+        if (box.innerHTML === '' && this.isGameInPlay && (this.turn === 1 || (this.turn === 2 && this.isSecondPlayer))){
             box.innerHTML = symbol;
             let number = ListBox.currentTarget.id;
             this.updateSquare(number, symbol);
@@ -241,26 +233,26 @@ class GameStatus /*implements IGameStatus*/{
         }
     }
 
-    updateSquare(boxNumber:number, symbol:string){
+    private updateSquare(boxNumber:number, symbol:string){
         this.currentBoard[boxNumber] = symbol;
     }
 
-    endTurn(symbol:string){
+    private endTurn(symbol:string){
         this.numFilledIn = this.numFilledIn + 1;
         if (this.isGameInPlay) {
           if (this.checkWin(symbol)[0]) {
             this.updateScore(this.turn);
-            if (this.isSecondPlayerActive) {
+            if (this.isSecondPlayer) {
               this.showWinMessage();
             }
             else {
-              //this.turn === 1 ? this.showWinMessage() : this.showLoseMessage();
+              this.turn === 1 ? this.showWinMessage() : this.showLoseMessage();
             }
             this.isGameInPlay = false;
-            //this.showWinningCombination();
-            //this.hidePlayerOnePrompt();
-            //this.hidePlayerTwoPrompt();
-            //this.reset();
+            this.showWinningCombination();
+            this.hidePlayerOnePrompt();
+            this.hidePlayerTwoPrompt();
+            this.reset();
           }
           // stop if it is a draw
           else if (this.numFilledIn >= 9) {
@@ -276,7 +268,7 @@ class GameStatus /*implements IGameStatus*/{
               //this.showPlayerTwoPrompt();
               this.turn = 2;
               // call computer turn if no second player
-              if (!this.isSecondPlayerActive) {
+              if (!this.isSecondPlayer) {
                 //this.computerPlay();
               }
             } else if (this.turn === 2) {
@@ -288,7 +280,7 @@ class GameStatus /*implements IGameStatus*/{
         }
     }// end endTurn 
 
-    checkWin(symbol: string | number){
+    private checkWin(symbol: string | number): any{
         let currentBoard = this.currentBoard;
         let wins = this.winCombos;
         let winningCombo:number[] = [];
@@ -307,14 +299,49 @@ class GameStatus /*implements IGameStatus*/{
        return [winner, winningCombo];
     }
 
-    updateScore(PlayerTurn:number){
+    private updateScore(PlayerTurn:number){
         this.turn === 1 ? this.playerOneScore += 1 : this.playerTwoScore += 1;
         let currentScore = this.turn === 1 ? this.playerOneScore : this.playerTwoScore;
         let score = document.getElementsByClassName(`score-${this.turn}`);
         score[0].firstElementChild.innerHTML = currentScore.toString(); 
     }
 
-    showWinMessage(){
+    private showWinMessage(){
+        setTimeout(()=> {
+            let winMessage = document.getElementsByClassName("win-message");
+            winMessage[0].classList.add("fadeIn");
+            winMessage[0].firstElementChild.innerHTML = `Player ${this.turn} wins! :D `;   
+        }, 1500);
+    }
+
+    private showLoseMessage(){
+        setTimeout(()=> {
+            let loseMessage = document.getElementsByClassName("lose-message"); 
+            loseMessage[0].classList.add("fadeIn");  
+        }, 1500);
+    }
+
+    private showWinningCombination(){
+        debugger;
+        let symbol = this.turn === 1 ? this.playerOneSymbol : this.playerTwoSymbol;
+        let combo = this.checkWin(symbol)[1];
+        for (var i = 0; i < combo.length; i++) {
+          let currentBoxId = <string>combo[i]; 
+          // Add a black box and rotating animation for winning combo  
+          let currentBox = document.getElementById(currentBoxId);
+          currentBox.children[0].children[0].classList.add("rotate");
+         }
+    }
+
+    private hidePlayerOnePrompt(){
+        //to do
+    }
+    
+    private hidePlayerTwoPrompt(){
+        //to do
+    }
+    
+    private reset(){
         //to do
     }
     

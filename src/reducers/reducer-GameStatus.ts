@@ -12,7 +12,7 @@ export default function gameReducer(state = initialState, action:any){
                 }
             );
                
-        case  types.BACKBTN_CLICKED_SUCCESS:
+        case  types.RESET_BOARD_CLASSES_SUCCESS:
         return(
             state = {
                 ...state,
