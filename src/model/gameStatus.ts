@@ -16,6 +16,12 @@ class GameStatus /*implements IGameStatus*/{
     private score_1: HTMLCollectionOf<Element>;
     private score_2: HTMLCollectionOf<Element>;
     private points_divider: HTMLCollectionOf<Element>;
+    private player_one_turn: HTMLCollectionOf<Element>;
+    private player_two_turn: HTMLCollectionOf<Element>;
+    private drawMessage: HTMLCollectionOf<Element>;
+    private loseMessage: HTMLCollectionOf<Element>; 
+    private winMessage: HTMLCollectionOf<Element>;
+    private boxes: HTMLCollectionOf<Element>;
 
     // Game logic   
     private isSecondPlayer: boolean;
@@ -34,13 +40,35 @@ class GameStatus /*implements IGameStatus*/{
         this.game_choice = document.getElementsByClassName('game-choice');
         this.game_starter = document.getElementsByClassName('game-starter');
         this.game_board = document.getElementsByClassName('game-board');
+        this.player_one_turn = document.getElementsByClassName("player-one-turn");
+        this.player_two_turn = document.getElementsByClassName("player-two-turn");
+        this.drawMessage = document.getElementsByClassName("draw-message");
+        this.loseMessage = document.getElementsByClassName("lose-message");
+        this.winMessage = document.getElementsByClassName("win-message");
+        this.boxes = document.getElementsByClassName("boxes"); 
         
+        this.initializeVars();
+
         this.isSecondPlayer = false;
         this.playerOneScore = 0;
         this.playerTwoScore = 0;
         this.turn = 0;
         this.playerOneSymbol = "";
         this.playerTwoSymbol = "";
+        this.winCombos = [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9],
+            [1, 4, 7],
+            [2, 5, 8],
+            [3, 6, 9],
+            [1, 5, 9],
+            [7, 5, 3]
+          ]; 
+    }
+    
+    private initializeVars(){
+        this.numFilledIn = 0;
         this.currentBoard = {
             1: '',
             2: '',
@@ -52,19 +80,8 @@ class GameStatus /*implements IGameStatus*/{
             8: '',
             9: ''
           };
-        this.numFilledIn = 0;  
-        this.winCombos = [
-            [1, 2, 3],
-            [4, 5, 6],
-            [7, 8, 9],
-            [1, 4, 7],
-            [2, 5, 8],
-            [3, 6, 9],
-            [1, 5, 9],
-            [7, 5, 3]
-          ];
     }
-    
+
     public showGameStartedBoard(numPlayer:number){
         this.hideGameChoiceBoard();
         this.game_starter[0].firstElementChild.innerHTML = "Would you like to be X or O?";
@@ -202,28 +219,27 @@ class GameStatus /*implements IGameStatus*/{
     }
 
     private showPlayerOnePrompt(){
-        let player_one_turn = document.getElementsByClassName("player-one-turn");
-        player_one_turn[0].classList.add("promptGoPlayerAnimation");
+        this.player_one_turn[0].className = "player-one-turn";
+        this.player_one_turn[0].classList.add("promptGoPlayerAnimation");
         if(this.isSecondPlayer){
-          player_one_turn[0].firstElementChild.innerHTML = "Go Player 1";
+          this.player_one_turn[0].firstElementChild.innerHTML = "Go Player 1";
         }else{
-            player_one_turn[0].firstElementChild.innerHTML = "Your turn!";  
+            this.player_one_turn[0].firstElementChild.innerHTML = "Your turn!";  
         }
     }
 
     private showPlayerTwoPrompt(){
-        let player_two_turn = document.getElementsByClassName("player-two-turn");
-        player_two_turn[0].classList.add("promptGoPlayerAnimation");
+        this.player_two_turn[0].className = "player-two-turn";
+        this.player_two_turn[0].classList.add("promptGoPlayerAnimation");
         if(this.isSecondPlayer){
-            player_two_turn[0].firstElementChild.innerHTML = "Go Player 2";
+            this.player_two_turn[0].firstElementChild.innerHTML = "Go Player 2";
         }else{
-            player_two_turn[0].firstElementChild.innerHTML = "Computer\'s turn";
+            this.player_two_turn[0].firstElementChild.innerHTML = "Computer\'s turn";
         } 
     }
 
     public playerTurn(ListBox:any){
         let symbol = this.turn === 1 ? this.playerOneSymbol : this.playerTwoSymbol;
-        
         let box = document.getElementById(ListBox.currentTarget.id).firstElementChild.firstElementChild;
         if (box.innerHTML === '' && this.isGameInPlay && (this.turn === 1 || (this.turn === 2 && this.isSecondPlayer))){
             box.innerHTML = symbol;
@@ -257,23 +273,23 @@ class GameStatus /*implements IGameStatus*/{
           // stop if it is a draw
           else if (this.numFilledIn >= 9) {
             this.isGameInPlay = false;
-            //this.hidePlayerOnePrompt();
-            //this.hidePlayerTwoPrompt();
-            //this.showDrawMessage();
+            this.hidePlayerOnePrompt();
+            this.hidePlayerTwoPrompt();
+            this.showDrawMessage();
             this.turn = this.whoStarts();
-            //this.reset();
+            this.reset();
           } else {
             if (this.turn === 1) {
-              //this.hidePlayerOnePrompt();
-              //this.showPlayerTwoPrompt();
+              this.hidePlayerOnePrompt();
+              this.showPlayerTwoPrompt();
               this.turn = 2;
               // call computer turn if no second player
               if (!this.isSecondPlayer) {
                 //this.computerPlay();
               }
             } else if (this.turn === 2) {
-              //this.showPlayerOnePrompt();
-              //this.hidePlayerTwoPrompt();
+              this.showPlayerOnePrompt();
+              this.hidePlayerTwoPrompt();
               this.turn = 1;
             }
           }
@@ -308,21 +324,19 @@ class GameStatus /*implements IGameStatus*/{
 
     private showWinMessage(){
         setTimeout(()=> {
-            let winMessage = document.getElementsByClassName("win-message");
-            winMessage[0].classList.add("fadeIn");
-            winMessage[0].firstElementChild.innerHTML = `Player ${this.turn} wins! :D `;   
+            this.winMessage[0].classList.add("fadeIn");
+            this.winMessage[0].firstElementChild.innerHTML = `Player ${this.turn} wins! :D `;   
         }, 1500);
     }
 
     private showLoseMessage(){
         setTimeout(()=> {
-            let loseMessage = document.getElementsByClassName("lose-message"); 
-            loseMessage[0].classList.add("fadeIn");  
+            this.loseMessage[0].classList.add("fadeIn");  
         }, 1500);
     }
 
     private showWinningCombination(){
-        debugger;
+
         let symbol = this.turn === 1 ? this.playerOneSymbol : this.playerTwoSymbol;
         let combo = this.checkWin(symbol)[1];
         for (var i = 0; i < combo.length; i++) {
@@ -333,16 +347,63 @@ class GameStatus /*implements IGameStatus*/{
          }
     }
 
-    private hidePlayerOnePrompt(){
-        //to do
+    private hidePlayerOnePrompt(){ 
+        this.player_one_turn[0].classList.remove("promptGoPlayerAnimation");
+        this.player_one_turn[0].classList.add("hidePlayerAnimation");    
     }
     
     private hidePlayerTwoPrompt(){
-        //to do
+        this.player_two_turn[0].classList.remove("promptGoPlayerAnimation");
+        this.player_two_turn[0].classList.add("hidePlayerAnimation"); 
+    }
+    
+    private showDrawMessage(){
+        setTimeout(()=> {
+           this.drawMessage[0].classList.add("fadeIn"); 
+        }, 1500);  
     }
     
     private reset(){
-        //to do
+        this.initializeVars(); 
+
+        setTimeout(()=> {
+            this.numFilledIn = 0;
+            this.isGameInPlay = true;
+            this.play();
+            this.resetSquares();
+            this.hideDrawMessage();
+            this.hideLoseMessage();
+            this.hideWinMessage();
+        }, 6000); 
+        // Not working
+        setTimeout(function() {
+            //this.drawMessage[0].className = "draw-message";
+            //this.loseMessage[0].className = "lose-message";
+            //this.winMessage[0].className = "win-message";  
+        }, 7000);
+    }
+
+    private hideDrawMessage(){
+       this.drawMessage[0].classList.remove("fadeIn"); 
+       this.drawMessage[0].classList.add("fadeOut"); 
+    }
+
+    private hideLoseMessage(){
+        this.loseMessage[0].classList.add("fadeOut");
+        this.loseMessage[0].classList.remove("fadeIn");
+    }
+
+    private hideWinMessage(){
+        this.winMessage[0].classList.add("fadeOut");
+        this.winMessage[0].classList.remove("fadeIn");
+    }
+
+    private resetSquares(){
+        for(var i = 0; i < this.boxes[0].children.length; i++){
+           this.boxes[0].children[i].firstElementChild.firstElementChild.className = "";
+           this.boxes[0].children[i].firstElementChild.firstElementChild.innerHTML = "";
+        }
+        
     }
     
 }
