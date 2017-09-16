@@ -31,16 +31,7 @@ class GameBoard extends React.Component<any, any>{
                 </div>
                 <canvas id="myCanvas"></canvas>
                 <ul className="boxes">
-                  {/*listBoxes*/} 
-                  <ListBoxItem id="1" key="1" onClick={this.props.playerTurn}/>
-                  <ListBoxItem id="2" key="2" onClick={this.props.playerTurn}/>
-                  <ListBoxItem id="3" key="3" onClick={this.props.playerTurn}/>
-                  <ListBoxItem id="4" key="4" onClick={this.props.playerTurn}/>
-                  <ListBoxItem id="5" key="5" onClick={this.props.playerTurn}/> 
-                  <ListBoxItem id="6" key="6" onClick={this.props.playerTurn}/> 
-                  <ListBoxItem id="7" key="7" onClick={this.props.playerTurn}/>
-                  <ListBoxItem id="8" key="8" onClick={this.props.playerTurn}/>  
-                  <ListBoxItem id="9" key="9" onClick={this.props.playerTurn}/>              
+                  {listBoxes}              
                 </ul>                        
           </div>  
         );

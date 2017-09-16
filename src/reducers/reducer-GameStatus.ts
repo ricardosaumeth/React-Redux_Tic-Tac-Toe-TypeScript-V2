@@ -39,6 +39,15 @@ export default function gameReducer(state = initialState, action:any){
             }
         );
 
+        case  types.RESET_GAME_SUCCESS:
+        return(
+            state = {
+                ...state,
+                game: action.payload,
+                gameVariables: [...state.gameVariables, action.payload] 
+            }
+        );
+
         default:
             return state;
     }

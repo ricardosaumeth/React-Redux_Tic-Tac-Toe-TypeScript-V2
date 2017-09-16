@@ -35,3 +35,10 @@ export function playerTurn(ListBox:any){
     };
 }
 
+export function resetGame(){
+    gameStatus.resetGame();
+    return {
+        type: types.RESET_GAME_SUCCESS,
+        payload: gameStatus
+    }; 
+}

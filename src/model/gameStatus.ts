@@ -12,7 +12,7 @@ class GameStatus /*implements IGameStatus*/{
     private game_starter: HTMLCollectionOf<Element>; 
     private game_board: HTMLCollectionOf<Element>;
     private canvas: HTMLCanvasElement;
-    private resetBtn: HTMLCollectionOf<Element>;
+    private resetAllBtn: HTMLCollectionOf<Element>;
     private score_1: HTMLCollectionOf<Element>;
     private score_2: HTMLCollectionOf<Element>;
     private points_divider: HTMLCollectionOf<Element>;
@@ -35,6 +35,17 @@ class GameStatus /*implements IGameStatus*/{
     private currentBoard: any;
     private numFilledIn: number;
     private winCombos: any[];
+    
+    private computer: {
+        computerWhichMove?: any
+        winOrBlockChoice?: any,     
+        doubleThreatChoice?: any,
+        diagonalSecondAttack?:any,
+        firstPlay?:any,
+        playCenter?:any,
+        emptyCorner?:any,
+        emptySide?:any
+     }
 
     constructor(){
         this.game_choice = document.getElementsByClassName('game-choice');
@@ -65,7 +76,8 @@ class GameStatus /*implements IGameStatus*/{
             [1, 5, 9],
             [7, 5, 3]
           ]; 
-    }
+        //this.createComputer();  
+    }// end constructor
     
     private initializeVars(){
         this.numFilledIn = 0;
@@ -177,7 +189,7 @@ class GameStatus /*implements IGameStatus*/{
     }
 
     private showScoreBoard(){
-        this.resetBtn = document.getElementsByClassName("hard-reset");
+        this.resetAllBtn = document.getElementsByClassName("hard-reset");
         this.score_1 = document.getElementsByClassName("score-1");
         this.score_2 = document.getElementsByClassName("score-2");
         this.points_divider = document.getElementsByClassName("points-divider");
@@ -193,7 +205,7 @@ class GameStatus /*implements IGameStatus*/{
 
         setTimeout(()=> { 
             // show the header on the board
-            this.resetBtn[0].classList.add("fadeIn"); 
+            this.resetAllBtn[0].classList.add("fadeIn"); 
             this.score_1[0].classList.add("fadeIn");
             this.score_2[0].classList.add("fadeIn");
             this.points_divider[0].setAttribute("style", "display: inline");
@@ -201,21 +213,26 @@ class GameStatus /*implements IGameStatus*/{
     }
 
     private whoStarts(){
-        var random = Math.floor(Math.random() * 2 + 1);
+        var random: number = random = Math.floor(Math.random() * 2 + 1);
         return random;
     }
 
     private play(){
         this.isGameInPlay = true;
-        if(this.turn === 1){
-            setTimeout(()=> {
-                this.showPlayerOnePrompt();   
-            }, 1500);      
-        }else{
-            setTimeout(()=> {
-                this.showPlayerTwoPrompt();   
-            }, 1500);
-        }
+        
+        setTimeout(()=> {
+            if(this.turn === 1){
+                this.showPlayerOnePrompt();
+            }else{
+                this.showPlayerTwoPrompt();
+            }
+        }, 1500);
+
+        setTimeout(()=> {
+            if (this.turn === 2 && !this.isSecondPlayer) {
+              this.computerPlay();
+            }
+          }, 1200);
     }
 
     private showPlayerOnePrompt(){
@@ -284,8 +301,8 @@ class GameStatus /*implements IGameStatus*/{
               this.showPlayerTwoPrompt();
               this.turn = 2;
               // call computer turn if no second player
-              if (!this.isSecondPlayer) {
-                //this.computerPlay();
+              if (!this.isSecondPlayer) {  
+                this.computerPlay();
               }
             } else if (this.turn === 2) {
               this.showPlayerOnePrompt();
@@ -375,11 +392,11 @@ class GameStatus /*implements IGameStatus*/{
             this.hideLoseMessage();
             this.hideWinMessage();
         }, 6000); 
-        // Not working
-        setTimeout(function() {
-            //this.drawMessage[0].className = "draw-message";
-            //this.loseMessage[0].className = "lose-message";
-            //this.winMessage[0].className = "win-message";  
+    
+        setTimeout(()=> {
+            this.drawMessage[0].className = "draw-message";
+            this.loseMessage[0].className = "lose-message";
+            this.winMessage[0].className = "win-message";  
         }, 7000);
     }
 
@@ -405,7 +422,236 @@ class GameStatus /*implements IGameStatus*/{
         }
         
     }
-    
+
+    public resetGame(){
+        
+        this.canvas.classList.remove("fadeIn");
+        this.canvas.classList.add("fadeOut");
+        this.game_choice[0].classList.add("fadeIn");
+        this.game_starter[0].className = "game-starter";
+        this.game_starter[0].setAttribute("style", "display:none");
+        this.resetAllBtn[0].classList.add("fadeOut");
+        this.score_1[0].classList.add("fadeOut");
+        this.score_2[0].classList.add("fadeOut");
+     
+        this.playerOneScore = 0;
+        this.playerTwoScore = 0;
+        this.resetSquares();
+        this.initializeVars();
+        this.isGameInPlay = false;
+        this.playerOneSymbol = null;
+        this.playerTwoSymbol = null;
+        this.player_one_turn[0].className = "player-one-turn";
+        this.player_two_turn[0].className = "player-two-turn";  
+
+        setTimeout(()=> {
+             
+            this.canvas.className = ""; 
+            this.resetAllBtn[0].className = "hard-reset";
+            this.score_1[0].className = "score-1";
+            this.score_2[0].className = "score-2"; 
+            this.points_divider[0].className = "points-divider";
+            this.player_one_turn[0].className = "player-one-turn";
+            this.player_two_turn[0].className = "player-two-turn";
+            this.points_divider[0].setAttribute("style","display:none");
+            this.game_choice[0].setAttribute("style", "display:block");
+            this.game_choice[0].className = "game-choice";
+        }, 1100);
+
+        setTimeout(()=> {
+            this.game_starter[0].setAttribute("style", "display: block"); 
+            this.game_choice[0].setAttribute("style", "display:block");
+        }, 2200);
+    }
+
+    private computerPlay(){
+        // use "this" to have access to the main gameStatus Object
+        this.createComputer(this);
+        let computer = this.computer;
+        let boxNumber:any; 
+        if(computer.computerWhichMove(this.computer) && this.turn === 2){
+            boxNumber = this.computer.computerWhichMove(this.computer); 
+            setTimeout(()=> {
+                this.boxes[0].children[boxNumber-1].firstElementChild.firstElementChild.innerHTML = this.playerTwoSymbol;
+                this.updateSquare(boxNumber, this.playerTwoSymbol);
+                this.endTurn(this.playerTwoSymbol);   
+            }, 1200);         
+        }
+    }
+
+    /*================================
+        Computer Move Decisions
+    =================================*/
+    private createComputer(this_gameStatus:any){
+        this.computer = {
+            computerWhichMove: function () {
+                var move = this.winOrBlockChoice('win')[0];
+                if (!move) {
+                    move = this.winOrBlockChoice('block')[0];
+                }
+                if (!move) {
+                    move = this.doubleThreatChoice('win');
+                }
+                if (!move) {
+                    move = this.doubleThreatChoice('block');
+                }
+                if (!move) {
+                    move = this.firstPlay();
+                }
+                if (!move) {
+                    move = this.playCenter();
+                }
+                if (!move) {
+                    move = this.emptyCorner();
+                }
+                if (!move) {
+                    move = this.emptySide();
+                }
+                move = (move && this_gameStatus.currentBoard[move]) === '' ? move : false;
+                return move;
+              },// computerWhichMove
+
+              winOrBlockChoice(choiceType:string, board:any) {
+                var board = board || this_gameStatus.currentBoard;
+                if (choiceType === 'win') {
+                  var currentSymbol = this_gameStatus.playerTwoSymbol;
+                  var opponentSymbol = this_gameStatus.playerOneSymbol;
+                } else if (choiceType === 'block') {
+                  var currentSymbol = this_gameStatus.playerOneSymbol;
+                  var opponentSymbol = this_gameStatus.playerTwoSymbol;
+                } else {
+                  return;
+                }
+                var moves:number[] = [];
+                this_gameStatus.winCombos.forEach(function(combo:number[]) {
+                  var notFound = [];
+                  var notPlayer = true;
+                  for (var i = 0; i < combo.length; i++) {
+                    if (board[combo[i]] !== currentSymbol) {
+                      if (board[combo[i]] === opponentSymbol) {
+                        notPlayer = false;
+                      } else {
+                        notFound.push(combo[i]);
+                      }
+                    }
+                  }
+                  if (notFound.length === 1 && notPlayer) {
+                    var move = notFound[0];
+                    moves.push(move);
+                  }
+                });
+                return moves;
+            }, // end winOrBlockChoice
+
+            doubleThreatChoice: function(choiceType:any) {
+                // use winChoice function to test a spot for double threat
+                var board = this_gameStatus.currentBoard;
+                var move;
+        
+                if (choiceType === 'win') {
+                    var currentSymbol = this_gameStatus.playerTwoSymbol;
+                    var opponentSymbol = this_gameStatus.playerOneSymbol;
+                } else if (choiceType === 'block') {
+                    var currentSymbol = this_gameStatus.playerOneSymbol;
+                    var opponentSymbol = this_gameStatus.playerTwoSymbol;
+                }
+        
+                // forced diagonal win on 4th move prevention
+                if (board[5] === currentSymbol && this_gameStatus.numFilledIn === 3) {
+                    if ((board[1] === opponentSymbol && board[9] === opponentSymbol) || (board[3] === opponentSymbol && board[7] === opponentSymbol)) {
+                        // Play an edge to block double threat
+                        move = this.emptySide();
+                    }
+                }
+        
+                if (!move && board[5] === opponentSymbol && this_gameStatus.numFilledIn === 2) {
+                    move = this.diagonalSecondAttack();
+                }
+        
+                if (!move) {
+                    // clone current board;
+                    //var testBoard = $.extend({}, board);
+                    var testBoard = Object.assign({}, board);
+                    for (var i = 1; i <= 9; i++) {
+        
+                        //testBoard = $.extend({}, board);
+                        testBoard = Object.assign({}, board);
+                        if (testBoard[i] === '') {
+                            testBoard[i] = currentSymbol;
+                            if (this.winOrBlockChoice(choiceType, testBoard).length >= 2) {
+                                move = i;
+                            }
+                        }
+                    }
+                }
+                return move || false;
+            },
+        
+          diagonalSecondAttack: function() {
+            var board = this_gameStatus.currentBoard;
+            var comp = this_gameStatus.playerTwoSymbol;
+            var corners = [1,3,7,9];
+            for (var i = 0; i < corners.length; i++) {
+                if (board[corners[i]] === comp) {
+                    return 10 - corners[i];
+                }
+            }
+          },
+        
+          firstPlay: function() {
+            var board = this_gameStatus.currentBoard;
+            var corners = [1, 3, 7, 9];
+            var move;
+            if (this_gameStatus.numFilledIn === 1) {
+                // player plays center
+                if (board[5] === this_gameStatus.playerOneSymbol) {
+                    var cornerNum = Math.floor(Math.random() * 4 + 1);
+                    move = [1, 3, 7, 9][cornerNum];
+                }
+                //player plays corner, play opposite corner
+                else {
+                    for (var i = 0; i < corners.length; i++) {
+                        if (this_gameStatus.currentBoard[corners[i]] === this_gameStatus.playerOneSymbol) {
+                        move = 5;
+                    }
+                }
+                }
+            } else if (this_gameStatus.numFilledIn === 0) {
+                var cornerNum = Math.floor(Math.random() * corners.length + 1);
+                move = corners[cornerNum];
+            }
+            return move ? move : false;
+        },
+          
+          playCenter: function() {
+            if (this_gameStatus.currentBoard[5] === '') {
+              return 5;
+            }
+          },
+        
+          emptyCorner: function() {
+            var board = this_gameStatus.currentBoard;
+            var corners = [1, 3, 7, 9];
+            var move;
+            for (var i = 0; i < corners.length; i++) {
+                if (board[corners[i]] === '') {
+                move = corners[i];
+                }
+            }
+            return move || false;
+          },
+        
+          emptySide: function() {
+            var sides = [2, 4, 6, 8];
+            for (var i = 0; i < sides.length; i++) {
+              if (this_gameStatus.currentBoard[sides[i]] === '') {
+                return sides[i];
+              }
+            }
+            return false;
+          }
+        } // end computer
+    } // end createComputer   
 }
 
 export default GameStatus;

@@ -1,10 +1,13 @@
 import * as React from "react";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
 
 import GameStarter from "./app/Game-Starter";
 import GameChoice from "./app/Game-Choice";
 import GameBoard from "./app/Game-Board";
 
 import Button from "./components/Button";
+import {resetGame} from "../actions/gameActions";
 
 class App extends React.Component<any, any>{   
     
@@ -12,7 +15,7 @@ class App extends React.Component<any, any>{
         
         return(  
             <div className="outer-container">
-              <Button className="hard-reset">Reset All</Button>
+              <Button className="hard-reset" onClick={this.props.resetGame}>Reset All</Button>
               <p className="score-1">
                 <span className="points"></span>
                 <span className="playerOne">Player 1</span>
@@ -38,4 +41,10 @@ class App extends React.Component<any, any>{
     }
 }
 
-export default App;
+function mapDispatchToProps(dispath: any) {
+  return bindActionCreators({
+    resetGame:resetGame
+      }, dispath);    
+}
+
+export default connect (null, mapDispatchToProps) (App);

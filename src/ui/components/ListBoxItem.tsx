@@ -11,7 +11,7 @@ class ListBoxItem extends React.Component<ListBoxItemProps, any>{
         super(props);
     }
     render(){
-
+        
         const {id, onClick} = this.props;
         return(
             <li id={id} onClick={onClick}>
@@ -22,4 +22,5 @@ class ListBoxItem extends React.Component<ListBoxItemProps, any>{
         );
     }
 }
+
 export default ListBoxItem;
